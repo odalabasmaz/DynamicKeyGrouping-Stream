@@ -11,12 +11,20 @@
 	<name>DynamicKeyGrouping-Stream</name>
 	<description>Dynamic Key Grouping Stream</description>
 
+	<developers>
+		<developer>
+			<name>Orhun Dalabasmaz</name>
+			<email>odalabasmaz@gmail.com</email>
+		</developer>
+	</developers>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.level>1.7</maven.compiler.level>
 		<kafka.version>0.10.1.0</kafka.version>
 		<project.shortName>dkg-stream</project.shortName>
+		<main.class>com.orhundalabasmaz.storm.Application</main.class>
 	</properties>
 
 	<dependencies>
@@ -67,7 +75,7 @@
 					<appendAssemblyId>false</appendAssemblyId>
 					<archive>
 						<manifest>
-							<mainClass>com.orhundalabasmaz.storm.Application</mainClass>
+							<mainClass>${main.class}</mainClass>
 						</manifest>
 						<manifestEntries>
 							<App-Version>${project.version}</App-Version>

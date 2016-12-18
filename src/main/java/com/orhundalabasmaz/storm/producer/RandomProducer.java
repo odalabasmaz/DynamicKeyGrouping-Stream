@@ -7,7 +7,7 @@ import java.util.Random;
  */
 public class RandomProducer extends BaseProducer {
 
-	private long limit = 10_000_000;
+	private long limit = 10_000;
 	private final Random random = new Random();
 
 	public RandomProducer(String topicName) {
