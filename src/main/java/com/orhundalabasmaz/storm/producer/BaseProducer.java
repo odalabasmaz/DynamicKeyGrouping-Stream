@@ -1,5 +1,6 @@
 package com.orhundalabasmaz.storm.producer;
 
+import com.orhundalabasmaz.storm.model.Message;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -10,11 +11,12 @@ import java.util.Properties;
 /**
  * @author Orhun Dalabasmaz
  */
-public abstract class BaseProducer implements StreamProducer {
+public abstract class BaseProducer<M extends Message> implements StreamProducer {
 
 	private Producer producer;
 	private final String topicName;
-	private final String servers = "localhost:9092";
+	private final String servers = "85.110.34.250:9092";
+//	private final String servers = "localhost:9092";
 
 	protected BaseProducer(String topicName) {
 		this.topicName = topicName;
@@ -26,6 +28,7 @@ public abstract class BaseProducer implements StreamProducer {
 		configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
 		configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
 		configProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+//		configProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "com.orhundalabasmaz.storm.serializer.JsonSerializer");
 		/*props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 		props.put(ProducerConfig.RETRIES_CONFIG, 0);
 		props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
@@ -45,8 +48,8 @@ public abstract class BaseProducer implements StreamProducer {
 
 	protected abstract void produce();
 
-	protected final void sendMessage(String message) {
-		ProducerRecord<String, String> rec = new ProducerRecord(topicName, message);
+	protected final void sendMessage(M message) {
+		ProducerRecord<String, String> rec = new ProducerRecord(topicName, message.getKey(), message.getKey());
 		producer.send(rec);
 //		producer.flush();
 	}

@@ -1,5 +1,8 @@
 package com.orhundalabasmaz.storm.producer;
 
+import com.orhundalabasmaz.storm.model.CountryMessage;
+import com.orhundalabasmaz.storm.utils.UUIDGenerator;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -13,7 +16,7 @@ import java.nio.file.Paths;
 /**
  * @author Orhun Dalabasmaz
  */
-public class FileProducer extends BaseProducer {
+public class FileProducer extends BaseProducer<CountryMessage> {
 
 	private final String filePath;
 
@@ -46,7 +49,11 @@ public class FileProducer extends BaseProducer {
 			try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 				String line;
 				while ((line = br.readLine()) != null) {
-					sendMessage(line.trim());
+					String countryName = line.trim();
+					CountryMessage message = new CountryMessage(countryName, String.valueOf(System.currentTimeMillis()));
+					message.setCountryCode("N/A");
+					message.setCountryName(countryName);
+					sendMessage(message);
 				}
 			}
 

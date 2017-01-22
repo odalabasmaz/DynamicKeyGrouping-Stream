@@ -1,11 +1,14 @@
 package com.orhundalabasmaz.storm.producer;
 
+import com.orhundalabasmaz.storm.model.CountryMessage;
+import com.orhundalabasmaz.storm.utils.UUIDGenerator;
+
 import java.util.Random;
 
 /**
  * @author Orhun Dalabasmaz
  */
-public class RandomProducer extends BaseProducer {
+public class RandomProducer extends BaseProducer<CountryMessage> {
 
 	private long limit = 10_000;
 	private final Random random = new Random();
@@ -22,7 +25,10 @@ public class RandomProducer extends BaseProducer {
 	@Override
 	protected void produce() {
 		for (int i = 0; i < limit; ++i) {
-			sendMessage(rand());
+			CountryMessage message = new CountryMessage(UUIDGenerator.generateUUID(), String.valueOf(System.currentTimeMillis()));
+			message.setCountryCode("N/A");
+			message.setCountryName(rand().trim());
+			sendMessage(message);
 		}
 	}
 
