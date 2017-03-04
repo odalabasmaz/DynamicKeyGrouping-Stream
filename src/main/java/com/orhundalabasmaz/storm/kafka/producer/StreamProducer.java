@@ -1,4 +1,4 @@
-package com.orhundalabasmaz.storm.producer;
+package com.orhundalabasmaz.storm.kafka.producer;
 
 /**
  * @author Orhun Dalabasmaz

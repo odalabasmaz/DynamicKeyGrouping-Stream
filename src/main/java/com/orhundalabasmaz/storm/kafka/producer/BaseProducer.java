@@ -1,10 +1,12 @@
-package com.orhundalabasmaz.storm.producer;
+package com.orhundalabasmaz.storm.kafka.producer;
 
 import com.orhundalabasmaz.storm.model.Message;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
@@ -12,11 +14,12 @@ import java.util.Properties;
  * @author Orhun Dalabasmaz
  */
 public abstract class BaseProducer<M extends Message> implements StreamProducer {
+	private Logger LOGGER = LoggerFactory.getLogger(BaseProducer.class);
 
 	private Producer producer;
 	private final String topicName;
-	private final String servers = "85.110.34.250:9092";
-//	private final String servers = "localhost:9092";
+//	private final String servers = "85.110.34.250:9092";
+	private final String servers = "localhost:9092";
 
 	protected BaseProducer(String topicName) {
 		this.topicName = topicName;
@@ -40,10 +43,10 @@ public abstract class BaseProducer<M extends Message> implements StreamProducer 
 	}
 
 	public final void produceStream() {
-		System.out.println("Producing stream ...");
+		LOGGER.info("Producing stream ...");
 		produce();
 		producer.close();
-		System.out.println("Producing done ...");
+		LOGGER.info("Producing done ...");
 	}
 
 	protected abstract void produce();

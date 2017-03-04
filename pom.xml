@@ -21,8 +21,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<maven.compiler.level>1.7</maven.compiler.level>
-		<kafka.version>0.10.1.0</kafka.version>
+		<maven.compiler.level>1.8</maven.compiler.level>
+		<kafka.version>0.10.1.1</kafka.version>
 		<project.shortName>dkg-stream</project.shortName>
 		<main.class>com.orhundalabasmaz.storm.Application</main.class>
 	</properties>

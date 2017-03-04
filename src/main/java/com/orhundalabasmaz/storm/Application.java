@@ -1,11 +1,17 @@
 package com.orhundalabasmaz.storm;
 
-import com.orhundalabasmaz.storm.producer.FileProducer;
-import com.orhundalabasmaz.storm.producer.InteractiveProducer;
-import com.orhundalabasmaz.storm.producer.RandomProducer;
-import com.orhundalabasmaz.storm.producer.StreamProducer;
+import com.orhundalabasmaz.storm.kafka.producer.FileProducer;
+import com.orhundalabasmaz.storm.kafka.producer.InteractiveProducer;
+import com.orhundalabasmaz.storm.kafka.producer.RandomProducer;
+import com.orhundalabasmaz.storm.kafka.producer.StreamProducer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Application {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+
+	private Application() {
+	}
 
 	/**
 	 * Run the program as;
@@ -19,8 +25,9 @@ public class Application {
 	 * topic_name: topic1
 	 */
 	public static void main(String[] args) throws Exception {
-		if (args.length != 2) {
-			throw new Exception("exactly two params needed");
+		if (args.length < 2) {
+			LOGGER.error("at least two params needed");
+			throw new UnsupportedOperationException("at least two params needed");
 		}
 
 		final String type = args[0];
@@ -32,16 +39,20 @@ public class Application {
 		} else if ("1".equals(type)) {
 			producer = new InteractiveProducer(topicName);
 		} else if ("2".equals(type)) {
-			producer = new FileProducer(topicName);
+			if (args.length >= 3) {
+				producer = new FileProducer(topicName, args[2]);
+			} else {
+				producer = new FileProducer(topicName);
+			}
 		} else {
-			throw new Exception("unexpected type: " + type);
+			LOGGER.error("unexpected type: {}", type);
+			throw new UnsupportedOperationException("unexpected type: " + type);
 		}
 
 		long begin = System.currentTimeMillis();
 		producer.produceStream();
 		long end = System.currentTimeMillis();
 		long duration = (end - begin) / 1000;
-		System.out.println("Time consumed: " + duration + " sec");
+		LOGGER.info("Time consumed: {} sec", duration);
 	}
-
 }

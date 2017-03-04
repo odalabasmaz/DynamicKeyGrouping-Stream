@@ -1,28 +1,29 @@
-package com.orhundalabasmaz.storm.producer;
+package com.orhundalabasmaz.storm.kafka.producer;
 
 import com.orhundalabasmaz.storm.model.CountryMessage;
-import com.orhundalabasmaz.storm.utils.UUIDGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author Orhun Dalabasmaz
  */
 public class FileProducer extends BaseProducer<CountryMessage> {
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(FileProducer.class);
 	private final String filePath;
 
 	public FileProducer(String topicName) {
 		super(topicName);
-		this.filePath = "data/country.txt";
+		this.filePath = "data/country-skew.txt";
 	}
 
 	public FileProducer(String topicName, String filePath) {
@@ -33,11 +34,12 @@ public class FileProducer extends BaseProducer<CountryMessage> {
 	@Override
 	protected void produce() {
 		try {
-			URL resource = this.getClass().getClassLoader().getResource(filePath);
+			/*URL resource = this.getClass().getClassLoader().getResource(filePath);
 			if (resource == null) {
+				LOGGER.error("File not found! {}", filePath);
 				throw new FileNotFoundException("File not found! " + filePath);
-			}
-			Path path = Paths.get(resource.toURI());
+			}*/
+			Path path = Paths.get(filePath);
 
 			// method 1
 			/*List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
@@ -46,6 +48,8 @@ public class FileProducer extends BaseProducer<CountryMessage> {
 			}*/
 
 			// method 2
+			long count = 0;
+			Map<String, Integer> map = new HashMap<>();
 			try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 				String line;
 				while ((line = br.readLine()) != null) {
@@ -54,8 +58,23 @@ public class FileProducer extends BaseProducer<CountryMessage> {
 					message.setCountryCode("N/A");
 					message.setCountryName(countryName);
 					sendMessage(message);
+
+					if (!map.containsKey(countryName)) {
+						map.put(countryName, 0);
+					}
+					map.put(countryName, map.get(countryName) + 1);
+					++count;
 				}
 			}
+			LOGGER.info(">>> Total produced: {}", count);
+			String result = "\ncountry,count";
+			TreeMap<String, Integer> treeMap = new TreeMap<>(map);
+			for (Map.Entry<String, Integer> entry : treeMap.entrySet()) {
+				String key = entry.getKey();
+				Integer value = entry.getValue();
+				result += "\n" + key + "," + value;
+			}
+			LOGGER.info(result);
 
 			// method 3
 			/*FileInputStream fileInputStream = new FileInputStream(path.toFile());
@@ -69,9 +88,8 @@ public class FileProducer extends BaseProducer<CountryMessage> {
 			fileInputStream.close();
 			channel.close();*/
 
-		} catch (IOException | URISyntaxException e) {
-			System.err.println("Exception occurred: " + e.getMessage());
-			e.printStackTrace();
+		} catch (IOException e) {
+			LOGGER.error("Exception occurred.", e);
 		}
 	}
 

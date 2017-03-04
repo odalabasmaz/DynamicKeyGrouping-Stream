@@ -1,4 +1,4 @@
-package com.orhundalabasmaz.storm.producer;
+package com.orhundalabasmaz.storm.kafka.producer;
 
 import com.orhundalabasmaz.storm.model.CountryMessage;
 import com.orhundalabasmaz.storm.utils.UUIDGenerator;
