@@ -19,7 +19,8 @@ public abstract class BaseProducer<M extends Message> implements StreamProducer 
 	private Producer producer;
 	private final String topicName;
 //	private final String servers = "85.110.34.250:9092";
-	private final String servers = "localhost:9092";
+//	private final String servers = "localhost:9092";
+	private final String servers = "192.168.1.39:9092";
 
 	protected BaseProducer(String topicName) {
 		this.topicName = topicName;

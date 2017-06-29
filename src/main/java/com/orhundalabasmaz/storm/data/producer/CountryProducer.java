@@ -52,9 +52,10 @@ public class CountryProducer {
 
 	private void endOfLine() {
 		TreeMap<String, Integer> map = new TreeMap<>(countryNames);
-		String result = "Countries (" + countryNames.size() + ")\n";
+		StringBuilder result = new StringBuilder();
+		result.append("Countries (").append(countryNames.size()).append(")\n");
 		for (Map.Entry<String, Integer> entry : map.entrySet()) {
-			result += entry.getKey() + ", " + entry.getValue() + "\n";
+			result.append(entry.getKey()).append(", ").append(entry.getValue()).append("\n");
 		}
 		try {
 			bufferedWriter.close();
@@ -62,7 +63,7 @@ public class CountryProducer {
 		} catch (IOException e) {
 			LOGGER.error("Close ex", e);
 		}
-		LOGGER.info(result);
+		LOGGER.info(result.toString());
 	}
 
 	private void writeToFile(String name) {
